@@ -13,7 +13,7 @@ module maze_rom (
 	
 	initial
 	begin
-		 $readmemb("maze_resized.txt", mem);
+		 $readmemb("mazevga.txt", mem);
 	end
 
 

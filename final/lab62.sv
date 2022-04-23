@@ -59,6 +59,8 @@ module lab62 (
 
 
 logic Reset_h, vssig, blank, sync, VGA_Clk;
+logic [3:0] no_move;
+logic [3:0] trash;
 
 
 //=======================================================
@@ -119,6 +121,8 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 	assign VGA_B = Blue[7:4];
 	assign VGA_G = Green[7:4];
 	
+	assign LEDR[3:0] = No_Move;
+	
 	
 	lab62_soc u0 (
 		.clk_clk                           (MAX10_CLK1_50),  //clk.clk
@@ -153,11 +157,11 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 		
 		//LEDs and HEX
 		.hex_digits_export({hex_num_4, hex_num_3, hex_num_1, hex_num_0}),
-		.leds_export({hundreds, signs, LEDR}),
+		.leds_export({hundreds, signs, LEDR[9:4], trash}),
 		.keycode_export(keycode)
 		
 	 );
-
+		
 
 //instantiate a vga_controller, ball, and color_mapper here with the ports.
 	vga_controller vga (
@@ -181,7 +185,8 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 		
       .BallX(ballxsig), 
 		.BallY(ballysig), 
-		.BallS(ballsizesig)
+		.BallS(ballsizesig),
+		.No_Move(No_Move)
 	);
 	
 	color_mapper color_map (
@@ -191,7 +196,7 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 		.DrawY(drawysig), 
 		.Ball_size(ballsizesig),
 		.blank(blank),
-		.Clk(VGA_HS),
+		.Clk(VGA_Clk),
 		
       .Red(Red),
 		.Green(Green), 

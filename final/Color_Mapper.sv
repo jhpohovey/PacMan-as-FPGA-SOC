@@ -23,7 +23,7 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	logic [7:0] mazeR, mazeG, mazeB;
 	
 	logic maze_rom_out;
-	logic [18:0] rom_addr;
+	logic [18:0] maze_rom_addr;
 //	logic [639:0] maze_rom_out;
 	
 
@@ -57,25 +57,25 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	
 	
 	maze_rom maze (
-		.read_address(rom_addr),
+		.read_address(maze_rom_addr),
 //		.read_address(DrawY),
 		.Clk(Clk),
 		
 		.data_Out(maze_rom_out)
 		);
 	
-//	always_comb begin
-		rom_addr = DrawY * `NUM_VGA_ROWS + DrawX;
+	always_comb begin
+		maze_rom_addr = DrawY * `NUM_VGA_COLS + DrawX;
 	
 //		if (maze_rom_out[DrawX] > 1'b0) begin
-		if (maze_rom_out == 1'b1) begin
+		if ((maze_rom_out == 1'b1) && (DrawX > 8'h10)) begin
+			mazeR = 8'h21;
+			mazeG = 8'h21;
+			mazeB = 8'hff;
+		end else begin
 			mazeR = 8'h00;
 			mazeG = 8'h00;
 			mazeB = 8'h00;
-		end else begin
-			mazeR = 8'hff;
-			mazeG = 8'hff;
-			mazeB = 8'hff;
 		end
 	end
 	
@@ -84,7 +84,7 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 	begin:RGB_Display
 		if ((ball_on == 1'b1)) begin 
 			Red = 8'hff;
-			Green = 8'h55;
+			Green = 8'hff;
 			Blue = 8'h00;
 		end else begin 
 			Red = mazeR;
