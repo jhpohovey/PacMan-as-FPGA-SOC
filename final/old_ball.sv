@@ -30,10 +30,13 @@ output [3:0] No_Move);
 	parameter [9:0] Ball_X_Step=1;      // Step size on the X axis
 	parameter [9:0] Ball_Y_Step=1;      // Step size on the Y axis
 
-	assign Ball_Size = 7;  // assigns the value 4 as a 10-digit binary number, ie "000000010
+	assign Ball_Size = 8;  // assigns the value 4 as a 10-digit binary number, ie "000000010
 	
 	logic [9:0] Correct_On_Left, Correct_On_Right, Correct_On_Up, Correct_On_Down;
 	logic [7:0] prev_keycode;
+	
+	logic [4:0] Collision_Resolver_Shift;
+	assign Collision_Resolver_Shift = 4'h 0;
 
 	logic no_move_left, no_move_up, no_move_right, no_move_down;
 	assign No_Move = {no_move_up, no_move_down, no_move_left, no_move_right};
@@ -95,25 +98,41 @@ output [3:0] No_Move);
 //				Ball_Y_Motion <= Ball_Y_Motion;  // Ball is somewhere in the middle, don't bounce, just keep moving
 			Ball_X_Motion <= Ball_X_Motion;
 			Ball_Y_Motion <= Ball_Y_Motion;
+			
+			Correct_On_Down <= 10'b 0000000000;
+			Correct_On_Up <= 10'b 0000000000;
+			Correct_On_Left <= 10'b 0000000000;
+			Correct_On_Right <= 10'b 0000000000;
 
 			if ( no_move_down && (prev_keycode == 8'h16) ) begin // Ball is at an bottom or top edge, stop moving in y direction
 				Ball_Y_Motion <= 1'b0;
-				Correct_On_Down <= (~ (Ball_Y_Step << 2) + 1'b1);
+				Correct_On_Down <= (~ (Ball_Y_Step << Collision_Resolver_Shift) + 1'b1);
+//				unique case (Ball_Y_Motion)
+//					Ball_Y_Step : begin
+//						
+//					end
+//					(~ (Ball_Y_Step) + 1'b1) : begin
+//						
+//					end
+//					default : begin // Y motion is 0
+//					
+//					end
+//				endcase
 			end
 			
 			else if ( no_move_up && (prev_keycode == 8'h1A) ) begin // Ball is at an bottom or top edge, stop moving in y direction
 				Ball_Y_Motion <= 1'b0;
-				Correct_On_Up <= Ball_Y_Step << 2; 
+				Correct_On_Up <= Ball_Y_Step << Collision_Resolver_Shift; 
 			end
 			
 			else if ( no_move_left && (prev_keycode == 8'h04) ) begin // Ball is at a left or right edge, stop moving in x direction
 				Ball_X_Motion <= 1'b0;
-				Correct_On_Left <= Ball_X_Step << 2;
+				Correct_On_Left <= Ball_X_Step << Collision_Resolver_Shift;
 			end
 				
 			else if ( no_move_right && (prev_keycode == 8'h07) ) begin // Ball is at a left or right edge, stop moving in x direction
 				Ball_X_Motion <= 1'b0;
-				Correct_On_Right <= (~ (Ball_X_Step << 2) + 1'b1);
+				Correct_On_Right <= (~ (Ball_X_Step << Collision_Resolver_Shift) + 1'b1);
 			end
 
 			else begin

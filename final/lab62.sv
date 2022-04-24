@@ -59,8 +59,8 @@ module lab62 (
 
 
 logic Reset_h, vssig, blank, sync, VGA_Clk;
-logic [3:0] no_move;
-logic [3:0] trash;
+logic no_move_up, no_move_down, no_move_left, no_move_right;
+logic [ 9: 0] trash;
 
 
 //=======================================================
@@ -121,7 +121,10 @@ logic [3:0] trash;
 	assign VGA_B = Blue[7:4];
 	assign VGA_G = Green[7:4];
 	
-	assign LEDR[3:0] = No_Move;
+	logic LED_Toggle;
+	assign LED_Toggle = 1'b1;
+	
+	assign LEDR = {no_move_up, {2'b11{LED_Toggle}}, no_move_down, {1'b1{LED_Toggle}}, no_move_left, {2'b11{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
 	
 	
 	lab62_soc u0 (
@@ -157,7 +160,8 @@ logic [3:0] trash;
 		
 		//LEDs and HEX
 		.hex_digits_export({hex_num_4, hex_num_3, hex_num_1, hex_num_0}),
-		.leds_export({hundreds, signs, LEDR[9:4], trash}),
+//		.leds_export({hundreds, signs, LEDR}),
+		.leds_export({hundreds, signs, Trash}),
 		.keycode_export(keycode)
 		
 	 );

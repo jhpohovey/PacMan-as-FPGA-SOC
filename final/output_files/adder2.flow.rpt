@@ -1,5 +1,5 @@
 Flow report for adder2
-Sat Apr 23 00:48:28 2022
+Sat Apr 23 18:05:34 2022
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -40,17 +40,17 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Sat Apr 23 00:48:28 2022       ;
+; Flow Status                        ; Successful - Sat Apr 23 18:05:34 2022       ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                      ; adder2                                      ;
 ; Top-level Entity Name              ; lab62                                       ;
 ; Family                             ; MAX 10                                      ;
 ; Device                             ; 10M50DAF484C7G                              ;
 ; Timing Models                      ; Final                                       ;
-; Total logic elements               ; 10,041 / 49,760 ( 20 % )                    ;
-;     Total combinational functions  ; 9,412 / 49,760 ( 19 % )                     ;
-;     Dedicated logic registers      ; 2,483 / 49,760 ( 5 % )                      ;
-; Total registers                    ; 2552                                        ;
+; Total logic elements               ; 10,066 / 49,760 ( 20 % )                    ;
+;     Total combinational functions  ; 9,433 / 49,760 ( 19 % )                     ;
+;     Dedicated logic registers      ; 2,508 / 49,760 ( 5 % )                      ;
+; Total registers                    ; 2577                                        ;
 ; Total pins                         ; 141 / 360 ( 39 % )                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 318,592 / 1,677,312 ( 19 % )                ;
@@ -66,7 +66,7 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 04/23/2022 00:36:44 ;
+; Start date & time ; 04/23/2022 17:52:49 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; adder2              ;
 +-------------------+---------------------+
@@ -77,7 +77,7 @@ refer to the applicable agreement for further details.
 +-------------------------------------+-------------------------------------------------------------+---------------+-------------+----------------+
 ; Assignment Name                     ; Value                                                       ; Default Value ; Entity Name ; Section Id     ;
 +-------------------------------------+-------------------------------------------------------------+---------------+-------------+----------------+
-; COMPILER_SIGNATURE_ID               ; 52230504306.165069220428736                                 ; --            ; --          ; --             ;
+; COMPILER_SIGNATURE_ID               ; 52230504306.165075436826776                                 ; --            ; --          ; --             ;
 ; EDA_OUTPUT_DATA_FORMAT              ; Systemverilog Hdl                                           ; --            ; --          ; eda_simulation ;
 ; EDA_SIMULATION_TOOL                 ; ModelSim-Altera (SystemVerilog)                             ; <None>        ; --          ; --             ;
 ; EDA_TIME_SCALE                      ; 1 ps                                                        ; --            ; --          ; eda_simulation ;
@@ -111,13 +111,13 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:08:50     ; 1.0                     ; 1301 MB             ; 00:09:17                           ;
-; Fitter               ; 00:01:48     ; 1.4                     ; 1769 MB             ; 00:02:40                           ;
-; Assembler            ; 00:00:07     ; 1.0                     ; 856 MB              ; 00:00:06                           ;
-; Power Analyzer       ; 00:00:18     ; 2.2                     ; 1370 MB             ; 00:00:31                           ;
-; Timing Analyzer      ; 00:00:17     ; 2.4                     ; 1004 MB             ; 00:00:30                           ;
-; EDA Netlist Writer   ; 00:00:08     ; 1.0                     ; 1211 MB             ; 00:00:07                           ;
-; Total                ; 00:11:28     ; --                      ; --                  ; 00:13:11                           ;
+; Analysis & Synthesis ; 00:09:36     ; 1.0                     ; 1296 MB             ; 00:10:02                           ;
+; Fitter               ; 00:01:57     ; 1.4                     ; 1769 MB             ; 00:02:56                           ;
+; Assembler            ; 00:00:07     ; 1.0                     ; 858 MB              ; 00:00:06                           ;
+; Power Analyzer       ; 00:00:21     ; 2.2                     ; 1365 MB             ; 00:00:35                           ;
+; Timing Analyzer      ; 00:00:19     ; 2.4                     ; 1015 MB             ; 00:00:34                           ;
+; EDA Netlist Writer   ; 00:00:08     ; 1.0                     ; 1213 MB             ; 00:00:07                           ;
+; Total                ; 00:12:28     ; --                      ; --                  ; 00:14:20                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
