@@ -16,10 +16,11 @@
 `define MAZE_DIMS 400
 
 module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
-							input logic blank, Clk,
+							input logic blank, Clk, 
+							input logic [240:0] Not_ate,
 							output logic [7:0]  Red, Green, Blue );
     
-	logic ball_on;
+	logic ball_on, cookie_on;
 	logic [7:0] mazeR, mazeG, mazeB;
 	
 	logic maze_rom_out;
@@ -54,16 +55,54 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 			ball_on = 1'b0;
 	end
 	
+	cookie_draw cookie_art (
+		.X_Pos(DrawX),
+		.Y_Pos(DrawY),
+//		.Not_ate({240{1'b1}),
+		.Not_ate(Not_ate),
+		
+		.cookie_on(cookie_on)
+	);
+		
 	
+//	always_comb
+//	begin
+////		cookie_on = 1'b0;
+////		if (Not_ate && (DrawX >= 10'h13d) && (DrawX <= 110'h141) && (DrawY >= 10'h0ed) && (DrawY <= 10'h0f1)) cookie_on = 1'b1;
+//	
+//		if ((ball_on == 1'b1)) begin 
+//			Red = 8'hff;
+//			Green = 8'hff;
+//			Blue = 8'h00;
+//		end 
+//		else if ((cookie_on == 1'b1)) begin 
+//			Red = 8'hff;
+//			Green = 8'hb7;
+//			Blue = 8'hae;
+//		end 
+//		else begin 
+////			Red = mazeR;
+////			Green = mazeG;
+////			Blue = mazeB;
+//			Red = 8'h00; 
+//			Green = 8'h00;
+//			Blue = 8'h00;
+//		end
+//	end
+
+//	font_rom font(
+//		.addr(),
+//		
+//		.data()
+//	);
 	
 	maze_rom maze (
 		.read_address(maze_rom_addr),
-//		.read_address(DrawY),
 		.Clk(Clk),
 		
 		.data_Out(maze_rom_out)
 		);
-	
+		
 	always_comb begin
 		maze_rom_addr = DrawY * `NUM_VGA_COLS + DrawX;
 	
@@ -86,7 +125,13 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 			Red = 8'hff;
 			Green = 8'hff;
 			Blue = 8'h00;
-		end else begin 
+		end
+		else if ((cookie_on == 1'b1)) begin 
+			Red = 8'hff;
+			Green = 8'hb7;
+			Blue = 8'hae;
+		end 
+		else begin 
 			Red = mazeR;
 			Green = mazeG;
 			Blue = mazeB;

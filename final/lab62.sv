@@ -60,7 +60,8 @@ module lab62 (
 
 logic Reset_h, vssig, blank, sync, VGA_Clk;
 logic no_move_up, no_move_down, no_move_left, no_move_right;
-logic [ 9: 0] trash;
+logic [ 9: 0] Trash;
+logic [240:0] Not_ate;
 
 
 //=======================================================
@@ -124,7 +125,9 @@ logic [ 9: 0] trash;
 	logic LED_Toggle;
 	assign LED_Toggle = 1'b1;
 	
-	assign LEDR = {no_move_up, {2'b11{LED_Toggle}}, no_move_down, {1'b1{LED_Toggle}}, no_move_left, {2'b11{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
+	
+	
+	assign LEDR = {no_move_up, {1'b1{LED_Toggle}}, no_move_down, LED_Toggle, no_move_left, {1'b1{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
 	
 	
 	lab62_soc u0 (
@@ -190,7 +193,8 @@ logic [ 9: 0] trash;
       .BallX(ballxsig), 
 		.BallY(ballysig), 
 		.BallS(ballsizesig),
-		.No_Move(No_Move)
+		.No_Move({no_move_up, no_move_down, no_move_left, no_move_right}),
+		.Not_ate(Not_ate)
 	);
 	
 	color_mapper color_map (
@@ -201,6 +205,7 @@ logic [ 9: 0] trash;
 		.Ball_size(ballsizesig),
 		.blank(blank),
 		.Clk(VGA_Clk),
+		.Not_ate(Not_ate),
 		
       .Red(Red),
 		.Green(Green), 

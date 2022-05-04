@@ -16,7 +16,8 @@
 module  ball ( input Reset, frame_clk,
 input [7:0] keycode,
 output [9:0]  BallX, BallY, BallS,
-output [3:0] No_Move);
+output [3:0] No_Move,
+output [240:0] Not_ate);
 
 	logic [9:0] Ball_X_Pos, Ball_X_Motion, Ball_Y_Pos, Ball_Y_Motion, Ball_Size;
 
@@ -40,10 +41,10 @@ output [3:0] No_Move);
 
 	logic no_move_left, no_move_up, no_move_right, no_move_down;
 	assign No_Move = {no_move_up, no_move_down, no_move_left, no_move_right};
-//	assign no_move_left = 1'b0;
-//	assign no_move_up = 1'b0;
-//	assign no_move_right = 1'b0;
-//	assign no_move_down = 1'b0;
+	assign no_move_left = 1'b0;
+	assign no_move_up = 1'b0;
+	assign no_move_right = 1'b0;
+	assign no_move_down = 1'b0;
 	
 	pacman_wall_collision on_left(
 		.X_Pos(Ball_X_Pos - Ball_Size),
@@ -69,6 +70,8 @@ output [3:0] No_Move);
 		
 		.Is_Wall(no_move_down)
 	);
+
+	cookies_wrapper_all wrapper (.Reset(Reset), .Clk(frame_clk), .BallX(BallX), .BallY(BallY), .Ball_Size(Ball_Size), .Not_ate(Not_ate));
 
 	always_ff @ (posedge Reset or posedge frame_clk )
 	begin: Move_Ball
@@ -219,6 +222,9 @@ output [3:0] No_Move);
 				Ball_Y_Motion <= 0;
 			Ball_Y_Pos <= (Ball_Y_Pos + Ball_Y_Motion + Correct_On_Up + Correct_On_Down);  // Update ball position
 			Ball_X_Pos <= (Ball_X_Pos + Ball_X_Motion + Correct_On_Left + Correct_On_Right);
+			
+			if (Ball_X_Pos < 10'd120) Ball_X_Pos <= 10'd520;
+			if (Ball_X_Pos > 10'd520) Ball_X_Pos <= 10'd120;
 
 		end  
 		
