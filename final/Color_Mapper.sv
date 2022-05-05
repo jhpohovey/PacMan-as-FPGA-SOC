@@ -135,6 +135,9 @@ module color_mapper(	input logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
 			Red = mazeR;
 			Green = mazeG;
 			Blue = mazeB;
+//			Red = 8'h00; 
+//			Green = 8'h00;
+//			Blue = 8'h00;
 		end
 	end
 	

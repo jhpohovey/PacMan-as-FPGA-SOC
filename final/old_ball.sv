@@ -41,10 +41,10 @@ output [240:0] Not_ate);
 
 	logic no_move_left, no_move_up, no_move_right, no_move_down;
 	assign No_Move = {no_move_up, no_move_down, no_move_left, no_move_right};
-	assign no_move_left = 1'b0;
-	assign no_move_up = 1'b0;
-	assign no_move_right = 1'b0;
-	assign no_move_down = 1'b0;
+//	assign no_move_left = 1'b0;
+//	assign no_move_up = 1'b0;
+//	assign no_move_right = 1'b0;
+//	assign no_move_down = 1'b0;
 	
 	pacman_wall_collision on_left(
 		.X_Pos(Ball_X_Pos - Ball_Size),
