@@ -1,3 +1,5 @@
+// source: https://verilogguide.readthedocs.io/en/latest/verilog/designs.html
+
 module LFSR
 #(
     parameter N = 9
