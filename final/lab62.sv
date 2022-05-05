@@ -142,9 +142,11 @@ logic [240:0] Not_ate;
 	logic LED_Toggle;
 	assign LED_Toggle = 1'b1;
 	
+	logic RandClk;
 	
 	
-	assign LEDR = {no_move_up, {1'b1{LED_Toggle}}, no_move_down, LED_Toggle, no_move_left, {1'b1{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
+	
+	assign LEDR = {{3{LED_Toggle}}, no_move_up, {1{LED_Toggle}}, no_move_down, {1{LED_Toggle}}, no_move_left, {1{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
 	
 	
 	lab62_soc u0 (
@@ -224,6 +226,10 @@ logic [240:0] Not_ate;
 		.blank(blank),
 		.Clk(VGA_Clk),
 		.Not_ate(Not_ate),
+		.GhastlyR(GhastlyR),
+		.GhastlyG(GhastlyG),
+		.GhastlyB(GhastlyB),
+		.Kill(Kill_Game),
 		
       .Red(Red),
 		.Green(Green), 
@@ -234,11 +240,49 @@ logic [240:0] Not_ate;
 		.Clk(MAX10_CLK1_50),
 		.Reset(Reset_h),
 		.Start(1'b1),
+		.Kill(Kill_Game),
 		
 		.hex0(hex_num_0),
 		.hex1(hex_num_1),
 		.hex2(hex_num_2),
-		.hex3(hex_num_3)
+		.hex3(hex_num_3),
+		.internal_randclk(RandClk)
 	);
+	
+	logic [9:0] X_ghost, Y_ghost;
+	logic [9:0] Size_ghost;
+	assign Size_ghost = 10'd8;
+	ghastly ghost (
+		.Clk(VGA_Clk),
+		.RandClk(RandClk),
+		.Reset(Reset_h),
+		.DrawX(drawxsig),
+		.DrawY(drawysig),
+		
+		.Red(GhastlyR),
+		.Green(GhastlyG),
+		.Blue(GhastlyB),
+		.X_Pos(X_ghost),
+		.Y_Pos(Y_ghost)
+	);
+	
+	logic [7:0] GhastlyR, GhastlyG, GhastlyB;
+	
+	logic Kill_Game;
+	assign Kill_Game = 1'b0;
+	
+//	module game_over (
+//		.Clk(VGA_Clk),
+//		.Reset(Reset_h),
+//		.X_ghost(X_ghost),
+//		.Y_ghost(Y_ghost),
+//		.Size_ghost(Size_ghost),
+//		.X_pac(ballxsig),
+//		.Y_pac(ballysig),
+//		.Size_pac(ballsizesig),
+//		.Not_ate(Not_ate),
+//		
+//		.Kill(Kill_Game)
+//	);
 
 endmodule

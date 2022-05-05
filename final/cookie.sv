@@ -33,8 +33,11 @@ module cookie (
 			) begin
 			
 			Not_ate <= 1'b0;
-		
 		end
+		else if ((Xc == 10'd319) && (Yc == 10'd239)) begin
+			Not_ate <= 1'b0;
+		end
+		
 		else begin
 			Not_ate <= 1'b1 & Not_ate;
 		end
