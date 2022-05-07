@@ -7,7 +7,8 @@ module cookie (
 	input logic [9:0] Yp,
 	input logic [9:0] Sizep,
 	
-	output logic Not_ate // 1 is cookie has not been eaten, 0 if it has
+	output logic Not_ate, // 1 is cookie has not been eaten, 0 if it has
+	output logic Score
 );
 
 	// Xp and Yp are the <x,y> position of pac-man
@@ -18,6 +19,7 @@ module cookie (
 	
 	always_comb begin
 		Size_adjusted = Sizep >> 1'b0;
+		Score = ~Not_ate;
 	end
 	
 	always_ff @ (posedge Reset or posedge Clk) begin
@@ -29,16 +31,13 @@ module cookie (
 			(Xp + Size_adjusted >= Xc) &&
 			(Yp - Size_adjusted <= Yc) &&
 			(Yp + Size_adjusted >= Yc) && 
-			Not_ate // make sure that once the cookie is eaten, it is not redrawn later unless reset, 1 for not eaten, 0 for eaten
-			) begin
+			Not_ate 
+			) begin // close enough to eat cookie
 			
 			Not_ate <= 1'b0;
 		end
-		else if ((Xc == 10'd319) && (Yc == 10'd239)) begin
-			Not_ate <= 1'b0;
-		end
 		
-		else begin
+		else begin // make sure that once the cookie is eaten, it is not redrawn later unless reset, 1 for not eaten, 0 for eaten
 			Not_ate <= 1'b1 & Not_ate;
 		end
 		

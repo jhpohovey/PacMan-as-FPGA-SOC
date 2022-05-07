@@ -4,6 +4,7 @@ module ghastly (
 	input logic Reset,
 	input logic [9:0] DrawX,
 	input logic [9:0] DrawY,
+	input logic [9:0] InitX, InitY,
 	output logic [7:0] Red, Green, Blue,
 	output logic [9:0] X_Pos, Y_Pos
 );
@@ -14,6 +15,8 @@ logic [11:0] pixel;
 Constrained_Dual_LFSR dualrand (
 	.Clk(RandClk),
 	.Reset(Reset),
+	.X_init(InitX),
+	.Y_init(InitY),
 	
 	.X_rand(X_Pos),
 	.Y_rand(Y_Pos)

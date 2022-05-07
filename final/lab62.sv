@@ -62,7 +62,8 @@ logic Reset_h, vssig, blank, sync, VGA_Clk;
 logic no_move_up, no_move_down, no_move_left, no_move_right;
 logic [ 9: 0] Trash;
 logic [15:0] hextrash;
-logic [240:0] Not_ate;
+logic [239:0] Not_ate;
+logic [7:0] Total_Score;
 
 
 //=======================================================
@@ -146,7 +147,8 @@ logic [240:0] Not_ate;
 	
 	
 	
-	assign LEDR = {{3{LED_Toggle}}, no_move_up, {1{LED_Toggle}}, no_move_down, {1{LED_Toggle}}, no_move_left, {1{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
+//	assign LEDR = {{3{LED_Toggle}}, no_move_up, {1{LED_Toggle}}, no_move_down, {1{LED_Toggle}}, no_move_left, {1{LED_Toggle}}, no_move_right}; // Light on means that cannot move in that direction
+	assign LEDR = {{2{~LED_Toggle}}, Total_Score};
 	
 	
 	lab62_soc u0 (
@@ -209,12 +211,14 @@ logic [240:0] Not_ate;
 		.Reset(Reset_h),
 		.frame_clk(VGA_VS),
 		.keycode(keycode),
+		.Kill(Kill_Game),
 		
       .BallX(ballxsig), 
 		.BallY(ballysig), 
 		.BallS(ballsizesig),
 		.No_Move({no_move_up, no_move_down, no_move_left, no_move_right}),
-		.Not_ate(Not_ate)
+		.Not_ate(Not_ate),
+		.Total_Score(Total_Score)
 	);
 	
 	color_mapper color_map (
@@ -226,9 +230,12 @@ logic [240:0] Not_ate;
 		.blank(blank),
 		.Clk(VGA_Clk),
 		.Not_ate(Not_ate),
-		.GhastlyR(GhastlyR),
-		.GhastlyG(GhastlyG),
-		.GhastlyB(GhastlyB),
+		.GhastlyR1(GhastlyR1),
+		.GhastlyG1(GhastlyG1),
+		.GhastlyB1(GhastlyB1),
+		.GhastlyR2(GhastlyR2),
+		.GhastlyG2(GhastlyG2),
+		.GhastlyB2(GhastlyB2),
 		.Kill(Kill_Game),
 		
       .Red(Red),
@@ -249,40 +256,84 @@ logic [240:0] Not_ate;
 		.internal_randclk(RandClk)
 	);
 	
-	logic [9:0] X_ghost, Y_ghost;
+	logic [9:0] X_ghost1, Y_ghost1;
+	logic [9:0] X_ghost2, Y_ghost2;
 	logic [9:0] Size_ghost;
 	assign Size_ghost = 10'd8;
-	ghastly ghost (
+	ghastly ghost1 (
 		.Clk(VGA_Clk),
 		.RandClk(RandClk),
 		.Reset(Reset_h),
 		.DrawX(drawxsig),
 		.DrawY(drawysig),
+		.InitX(1'b1),
+		.InitY(1'b1),
 		
-		.Red(GhastlyR),
-		.Green(GhastlyG),
-		.Blue(GhastlyB),
-		.X_Pos(X_ghost),
-		.Y_Pos(Y_ghost)
+		.Red(GhastlyR1),
+		.Green(GhastlyG1),
+		.Blue(GhastlyB1),
+		.X_Pos(X_ghost1),
+		.Y_Pos(Y_ghost1)
 	);
 	
-	logic [7:0] GhastlyR, GhastlyG, GhastlyB;
+	logic [7:0] GhastlyR1, GhastlyG1, GhastlyB1;
+	logic [7:0] GhastlyR2, GhastlyG2, GhastlyB2;
 	
-	logic Kill_Game;
-	assign Kill_Game = 1'b0;
+	ghastly ghost2 (
+		.Clk(VGA_Clk),
+		.RandClk(RandClk),
+		.Reset(Reset_h),
+		.DrawX(drawxsig),
+		.DrawY(drawysig),
+		.InitX(8'ha8),
+		.InitY(8'h67),
+		
+		.Red(GhastlyR2),
+		.Green(GhastlyG2),
+		.Blue(GhastlyB2),
+		.X_Pos(X_ghost2),
+		.Y_Pos(Y_ghost2)
+	);
 	
-//	module game_over (
-//		.Clk(VGA_Clk),
-//		.Reset(Reset_h),
-//		.X_ghost(X_ghost),
-//		.Y_ghost(Y_ghost),
-//		.Size_ghost(Size_ghost),
-//		.X_pac(ballxsig),
-//		.Y_pac(ballysig),
-//		.Size_pac(ballsizesig),
-//		.Not_ate(Not_ate),
-//		
-//		.Kill(Kill_Game)
-//	);
+//	logic [13:0] GhastlyR, GhastlyG, GhastlyB;
+//	assign GhastlyR = {GhastlyR1, GhastlyR2};
+//	assign GhastlyG = {GhastlyG1, GhastlyG2};
+//	assign GhastlyB = {GhastlyB1, GhastlyB2};
+//	logic [19:0] X_ghost, Y_ghost;
+//	assign X_ghost = {X_ghost1, X_ghost2};
+//	assign Y_ghost = {Y_ghost1, Y_ghost2};
+	
+	
+	logic Kill_Game, Kill_Game1, Kill_Game2;
+	assign Kill_Game = Kill_Game1 | Kill_Game2;
+//	assign Kill_Game = 1'b0;
+	
+	game_over game_end_conditions1 (
+		.Clk(VGA_Clk),
+		.Reset(Reset_h),
+		.X_ghost(X_ghost1),
+		.Y_ghost(Y_ghost1),
+		.Size_ghost(Size_ghost),
+		.X_pac(ballxsig),
+		.Y_pac(ballysig),
+		.Size_pac(ballsizesig),
+		.Not_ate(Not_ate),
+		
+		.Kill(Kill_Game1)
+	);
+	
+		game_over game_end_conditions2 (
+		.Clk(VGA_Clk),
+		.Reset(Reset_h),
+		.X_ghost(X_ghost2),
+		.Y_ghost(Y_ghost2),
+		.Size_ghost(Size_ghost),
+		.X_pac(ballxsig),
+		.Y_pac(ballysig),
+		.Size_pac(ballsizesig),
+		.Not_ate(Not_ate),
+		
+		.Kill(Kill_Game2)
+	);
 
 endmodule

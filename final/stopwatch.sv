@@ -1,4 +1,5 @@
-// source: https://simplefpga.blogspot.com/2012/07/to-code-stopwatch-in-verilog.html
+// reference: https://stackoverflow.com/questions/37514979/verilog-creating-a-timer-to-count-a-second
+// reference: https://simplefpga.blogspot.com/2012/07/to-code-stopwatch-in-verilog.html
 
 module stopwatch(
     input logic Clk,
@@ -15,23 +16,23 @@ module stopwatch(
 	 
 );
 
-reg [22:0] ticker; //23 bits needed to count up to 5M bits
+reg [22:0] ticker; 
 wire click;
 
 reg [7:0] counter;
 
-//the mod 5M clock to generate a tick ever 0.1 second
+//clock to generate a tick ever 0.1 second based on 50 MHz wave
 
 always_ff @ (posedge Clk or posedge Reset) begin
 	if(Reset) begin
 		ticker <= 1'b0;
 		counter <= 1'b0;
 	end
-	else if(ticker == 5000000) begin//if it reaches the desired max value reset it
+	else if(ticker == 5000000) begin // reset after 500k edges of 50 MHz clock
 		ticker <= 1'b0;
 		counter <= counter + 1'b1;
 	end
-	else if (counter == 40) begin
+	else if (counter == 40) begin // counter teleport cooldown on ghosts
 		counter <= 1'b0;
 		ticker <= ticker + 1'b1;
 	end
@@ -57,32 +58,32 @@ begin
 
 	else if (click) //increment at every click
 	begin
-		if(hex0 == 4'h9) //xxx9 - the 0.1 second digit
-		begin  //if_1
+		if(hex0 == 4'h9) 
+		begin  
 			hex0 <= 1'b0;
 
-			if (hex1 == 4'h9) //xx99 
-			begin  // if_2
+			if (hex1 == 4'h9)
+			begin  
 				hex1 <= 1'b0;
 		
-				if (hex2 == 4'h5) //x599 - the two digit seconds digits
-				begin //if_3
+				if (hex2 == 4'h5) 
+				begin 
 					hex2 <= 1'b0;
 				
-					if(hex3 == 4'h9) //9599 - The minute digit
+					if(hex3 == 4'h9)
 						hex3 <= 1'b0;
 					
 					else
 						hex3 <= hex3 + 1'b1;
 				end
-				else //else_3
+				else 
 					hex2 <= hex2 + 1'b1;
 			end
-			else //else_2
+			else 
 				hex1 <= hex1 + 1'b1;
 		end 
 
-		else //else_1
+		else 
 			hex0 <= hex0 + 1'b1;
 	end
 	

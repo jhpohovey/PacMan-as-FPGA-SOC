@@ -72,16 +72,32 @@ def generate_cookie_wrapper_sv(coords):
     no_eat = 'Not_ate'
     past_eat = 'Prev_ate'
     rem = [(319,212), (140,92), (140,350), (498,350), (498,92)]
+    cookie_ct = '`COOKIE_COUNT'
+    score_tot = 'Total_Score'
 
     outfile = 'sprite_bytes/cookies_wrapper_all.sv'
     with open (outfile, 'w') as f:
+        f.write(f'`define {cookie_ct[1:]} {coords.shape[0]}\n\n')
         f.write('module {} (\n'.format(outfile[outfile.find('/')+1:-3]))
         f.write('\tinput logic {},\n'.format(rst))
         f.write('\tinput logic {},\n'.format(clk))
         f.write('\tinput logic [9:0] {},\n'.format(bx))
         f.write('\tinput logic [9:0] {},\n'.format(by))
         f.write('\tinput logic [9:0] {},\n\n'.format(bs))
-        f.write('\toutput logic [{}:0] {}\n);\n\n'.format(coords.shape[0]-1, no_eat))
+        f.write('\toutput logic [{}:0] {},\n'.format(int(np.ceil(np.log(coords.shape[0]) / np.log(2)))-1, score_tot))
+        f.write('\toutput logic [{}-1:0] {}\n);\n\n'.format(cookie_ct, no_eat))
+        f.write('logic summation_tmp;\n')
+        f.write(f'reg [{cookie_ct}-1:0] cookie_scores;\n\n')
+        f.write('\n\ninteger i;\n')
+        f.write('always_comb begin\n')
+        f.write(f'\tfor(i = 0; i < {cookie_ct}; i = i + 1) begin\n')
+        f.write('\t\tsummation_tmp += cookie_scores[i];\n')
+        f.write('\tend\n')
+        f.write('end\n')
+        f.write(f'\n\nalways_ff @ (posedge {clk} or posedge {rst})begin\n')
+        f.write(f'\tif ({rst}) {score_tot} <= 1\'b0;\n') 
+        f.write(f'\telse {score_tot} <= summation_tmp;\n')
+        f.write('end\n\n')
         for i,pair in tqdm(enumerate(coords)):
             x_10,y_10 = pair
             x_10 = int(x_10)
@@ -89,7 +105,7 @@ def generate_cookie_wrapper_sv(coords):
             x_16 = hex(x_10)[2:]
             y_16 = hex(y_10)[2:]
             if (x_10,y_10) not in rem: # remove big power ups and ghost wall
-                f.write('cookie ck{} (.Clk({}), .Reset({}), .Xc(10\'d{}), .Yc(10\'d{}), .Xp({}), .Yp({}), .Sizep({}), .Not_ate({}[{}]) );\n\n'.format(i, clk, rst, x_10, y_10, bx, by, bs, no_eat, i))
+                f.write('cookie ck{} (.Clk({}), .Reset({}), .Xc(10\'d{}), .Yc(10\'d{}), .Xp({}), .Yp({}), .Sizep({}), .Not_ate({}[{}]), .Score(cookie_scores[{}]) );\n\n'.format(i, clk, rst, x_10, y_10, bx, by, bs, no_eat, i, i))
         f.write('\n\nendmodule\n\n')
     f.close()
 
@@ -140,6 +156,7 @@ if __name__ == "__main__":
 
     final_image, coord_pairs = draw_centers(img, contours)
     print(coord_pairs)
+    coord_pairs = coord_pairs[:-1,]
     # cv.imshow("final", final_image)
     generate_cookie_wrapper_sv(coords=coord_pairs)
     generate_cookie_draw_sv(coords=coord_pairs)

@@ -1,11 +1,13 @@
 module cookie_draw (
 	input logic [9:0] X_Pos,
 	input logic [9:0] Y_Pos,
-	input logic [240:0] Not_ate,
+	input logic [239:0] Not_ate,
 
 	output logic cookie_on);
 
 always_comb begin
+
+	// determine whether or not a cookie should be drawn at a certain X and Y loc of the virtual electron beam
 	cookie_on = 1'b0;
 	if ((Not_ate[0] == 1'b1) && (X_Pos >= 10'd496) && (X_Pos <= 10'd500) && (Y_Pos >= 10'd426) && (Y_Pos <= 10'd430)) cookie_on = 1'b1;
 
@@ -486,8 +488,6 @@ always_comb begin
 	if ((Not_ate[238] == 1'b1) && (X_Pos >= 10'd153) && (X_Pos <= 10'd157) && (Y_Pos >= 10'd65) && (Y_Pos <= 10'd69)) cookie_on = 1'b1;
 
 	if ((Not_ate[239] == 1'b1) && (X_Pos >= 10'd139) && (X_Pos <= 10'd143) && (Y_Pos >= 10'd65) && (Y_Pos <= 10'd69)) cookie_on = 1'b1;
-
-	if ((Not_ate[240] == 1'b1) && (X_Pos >= 10'd317) && (X_Pos <= 10'd321) && (Y_Pos >= 10'd237) && (Y_Pos <= 10'd241)) cookie_on = 1'b1;
 
 end
 

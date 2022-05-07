@@ -5,7 +5,7 @@ import random
 
 
 def get_coords ():
-    data = np.genfromtxt('sprite_bytes/mazevga.txt',delimiter='\n')
+    data = np.genfromtxt('sprite_bytes/filled.txt',delimiter='\n')
     print(data.shape)
     data = data.reshape(480,-1)
 

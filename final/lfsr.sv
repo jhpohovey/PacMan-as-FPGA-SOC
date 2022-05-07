@@ -1,4 +1,5 @@
-// source: https://verilogguide.readthedocs.io/en/latest/verilog/designs.html
+// reference: https://www.eng.auburn.edu/~strouce/class/elec6250/LFSRs.pdf
+// reference: https://verilogguide.readthedocs.io/en/latest/verilog/designs.html
 
 module LFSR
 #(
@@ -7,6 +8,7 @@ module LFSR
 
 (
     input wire Clk, Reset, 
+	 input wire [N:0] Init,
     output wire [N:0] q
 );
 
@@ -19,7 +21,7 @@ begin
     if (Reset)
         begin
         // set initial value to 1
-        r_reg <= 1; 
+        r_reg <= Init; 
         
         
         end     
